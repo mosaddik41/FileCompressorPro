@@ -10,11 +10,9 @@ int main() {
 
     std::cout << "--- C++ File Compressor: Day 2 (Logic Test) ---" << std::endl;
 
-    // 1. Get data from our file manager
     std::vector<char> fileData = fm.readFile();
     std::string input(fileData.begin(), fileData.end());
 
-    // 2. Simple LZW encoding loop
     std::string current = "";
     std::vector<int> compressedOutput;
 
@@ -34,7 +32,6 @@ int main() {
         compressedOutput.push_back(dict.getCode(current));
     }
 
-    // 3. Show the result
     std::cout << "[RESULT] Compressed Codes: ";
     for (int code : compressedOutput) {
         std::cout << code << " ";

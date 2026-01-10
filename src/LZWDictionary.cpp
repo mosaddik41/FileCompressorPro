@@ -8,7 +8,6 @@ void LZWDictionary::reset() {
     compressDict.clear();
     decompressDict.clear();
     
-    // Initialize with standard ASCII (0-255)
     for (int i = 0; i < 256; i++) {
         std::string s(1, (char)i);
         compressDict[s] = i;

@@ -15,7 +15,6 @@ long long FileManager::getFileSize() {
 }
 
 std::vector<char> FileManager::readFile() {
-    // Open file in binary mode
     std::ifstream file("sample.txt", std::ios::binary | std::ios::ate);
     
     if (!file.is_open()) return {};
