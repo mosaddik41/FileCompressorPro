@@ -1,0 +1,6 @@
+﻿*.exe
+*.bin
+*.log
+restored.txt
+output.txt
+.vscode/

@@ -13,11 +13,16 @@ void LZWDictionary::reset() {
         compressDict[s] = i;
         decompressDict[i] = s;
     }
+    
     nextCode = 256;
 }
 
 bool LZWDictionary::contains(const std::string& sequence) {
     return compressDict.find(sequence) != compressDict.end();
+}
+
+bool LZWDictionary::containsSequenceForCode(int code) {
+    return decompressDict.find(code) != decompressDict.end();
 }
 
 void LZWDictionary::add(const std::string& sequence) {
@@ -29,9 +34,18 @@ void LZWDictionary::add(const std::string& sequence) {
 }
 
 int LZWDictionary::getCode(const std::string& sequence) {
-    return compressDict[sequence];
+    if (contains(sequence)) {
+        return compressDict[sequence];
+    }
+    return -1; 
 }
 
 std::string LZWDictionary::getSequence(int code) {
-    return decompressDict[code];
+    if (containsSequenceForCode(code)) {
+        return decompressDict[code];
+    }
+    return ""; 
+
+
+
 }
