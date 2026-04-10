@@ -17,20 +17,37 @@
 #include "../include/AnalysisEngine.h"
 #include "../include/DictMonitor.h"
 #include "../include/SecurityManager.h"
+#include "../include/LossyEngine.h" 
 
-
-const std::string APP_VERSION = "3.0.0-ENTERPRISE";
-const std::string BUILD_DATE = "2026-01-14";
+const std::string APP_VERSION = "3.1.0-ENTERPRISE"; 
+const std::string BUILD_DATE = "2026-04-11";
 const std::string DEVELOPER_INFO = "SPL1 Project - Secure LZW Engine";
 
+size_t runSilentCompression(const std::vector<char>& data) {
+    LZWDictionary dict;
+    BitBuffer buffer;
+    std::string chain = "";
+    for (char b : data) {
+        std::string combined = chain + b;
+        if (dict.contains(combined)) {
+            chain = combined;
+        } else {
+            buffer.write12Bits(dict.getCode(chain));
+            dict.add(combined);
+            chain = std::string(1, b);
+        }
+    }
+    if (!chain.empty()) buffer.write12Bits(dict.getCode(chain));
+    buffer.flush();
+    return buffer.getPackedData().size();
+}
 
 void printApplicationHeader() {
     std::cout << "\n========================================================" << std::endl;
     std::cout << "      LZW SECURE PROFESSIONAL COMPRESSION SYSTEM        " << std::endl;
-    std::cout << "          DESIGNED FOR SPL1  PROJECT - V" << APP_VERSION << "          "  << std::endl;
+    std::cout << "          DESIGNED FOR SPL1 PROJECT - V" << APP_VERSION << std::endl;
     std::cout << "========================================================" << std::endl;
 }
-
 
 void showSystemInfo() {
     std::cout << "\n[SYSTEM CONFIGURATION]" << std::endl;
@@ -38,7 +55,7 @@ void showSystemInfo() {
     std::cout << "Max Dictionary Entries: 4096" << std::endl;
     std::cout << "Security Mode: Session-Locked XOR Cipher" << std::endl;
     std::cout << "Header Protocol: LZWv3 (Magic + Hash + Payload)" << std::endl;
-    std::cout << "Build Target: x64 Windows/Linux (MinGW)" << std::endl;
+    std::cout << "Comparison Engine: Bit-Quantization Lossy Module" << std::endl; // Updated
     std::cout << "--------------------------------------------------------" << std::endl;
 }
 
@@ -72,7 +89,6 @@ int main() {
 
     printApplicationHeader();
 
-
     std::string sessionPassword;
     std::cout << "\n[SECURITY] INITIALIZE SESSION" << std::endl;
     std::cout << "Please set a Master Password for this session: ";
@@ -88,12 +104,13 @@ int main() {
         std::cout << "\n--- SYSTEM CONTROL PANEL ---" << std::endl;
         std::cout << " 1. [SECURE COMPRESS]   Process 'sample.txt'" << std::endl;
         std::cout << " 2. [SECURE DECOMPRESS] Process 'compressed.bin'" << std::endl;
+        std::cout << " 8. [COMPARISON MODE]   Lossless vs Lossy Analysis" << std::endl; // New Feature
         std::cout << " 3. [DIAGNOSTICS]       Algorithm Parameters" << std::endl;
         std::cout << " 4. [MANUAL]            Technical Documentation" << std::endl;
         std::cout << " 5. [HEX VIEW]          Raw Binary Inspection" << std::endl;
         std::cout << " 6. [LOGS]              Session History" << std::endl;
         std::cout << " 7. [QUIT]              Exit System" << std::endl;
-        std::cout << "\nAction Choice (1-7): ";
+        std::cout << "\nAction Choice (1-8): ";
 
         if (!(std::cin >> userCommand)) {
             std::cin.clear();
@@ -197,6 +214,29 @@ int main() {
                 break;
             }
 
+            case 8: { 
+                FileManager fm("sample.txt", "compressed.bin");
+                if (!fm.fileExists()) {
+                    std::cout << "[!] Please ensure 'sample.txt' exists for analysis." << std::endl;
+                    continue;
+                }
+                std::vector<char> originalData = fm.readFile();
+                
+                std::cout << "\n[COMPARISON ENGINE] Analyzing Lossless vs Lossy performance..." << std::endl;
+                
+                // 1. Calculate Lossless Result
+                size_t losslessSize = runSilentCompression(originalData);
+                
+                // 2. Calculate Lossy Result
+                std::vector<char> lossyTransformed = LossyEngine::compressLossy(originalData);
+                double lossPercent = LossyEngine::calculateDataLoss(originalData, lossyTransformed);
+                size_t lossySize = runSilentCompression(lossyTransformed);
+
+                // 3. Display the Report
+                AnalysisEngine::displayComparisonTable(originalData.size(), losslessSize, lossySize, lossPercent);
+                break;
+            }
+
             case 3: showSystemInfo(); break;
             case 4: std::cout << TECHNICAL_MANUAL << std::endl; break;
             case 5: displayHexView("compressed.bin"); break;
@@ -208,3 +248,7 @@ int main() {
     std::cout << "\n[INFO] Flushed memory. Closing SPL1 Secure LZW System..." << std::endl;
     return 0;
 }
+
+
+
+

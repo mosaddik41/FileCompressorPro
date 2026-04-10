@@ -1,1 +1,18 @@
-Hello World! This is my compression project.
+COMPRESSION_TEST_START
+The quick brown fox jumps over the lazy dog.
+Data compression is the process of encoding information using fewer bits than the original representation.
+LZW compression is a lossless data compression algorithm.
+LZW compression is a lossless data compression algorithm.
+LZW compression is a lossless data compression algorithm.
+[REPEATING_PATTERN_SECTION]
+Binary data: 0101010101010101010101010101010101010101010101010101
+Binary data: 0101010101010101010101010101010101010101010101010101
+Binary data: 0101010101010101010101010101010101010101010101010101
+[REPEATING_PATTERN_SECTION]
+The dictionary is being built. The dictionary is being built.
+The dictionary is being built. The dictionary is being built.
+The dictionary is being built. The dictionary is being built.
+C++ is a powerful language. C++ is a powerful language.
+C++ is a powerful language. C++ is a powerful language.
+C++ is a powerful language. C++ is a powerful language.
+[END_OF_BLOCK]
