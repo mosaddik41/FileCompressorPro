@@ -19,6 +19,7 @@
 #include "../include/SecurityManager.h"
 #include "../include/LossyEngine.h" 
 
+auto sessionStart = std::chrono::system_clock::now();
 const std::string APP_VERSION = "3.1.0-ENTERPRISE"; 
 const std::string BUILD_DATE = "2026-04-11";
 const std::string DEVELOPER_INFO = "SPL1 Project - Secure LZW Engine";
@@ -50,6 +51,20 @@ void printApplicationHeader() {
 }
 
 void showSystemInfo() {
+    auto now = std::chrono::system_clock::now();
+    std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
+
+    std::cout << "\n[SYSTEM CONFIGURATION]" << std::endl;
+    std::cout << "Architecture: Fixed-Width 12-Bit LZW Encoding" << std::endl;
+    std::cout << "Max Dictionary Entries: 4096" << std::endl;
+    std::cout << "Security Mode: Session-Locked XOR Cipher" << std::endl;
+    std::cout << "Current Session Start: " << std::ctime(&currentTime); // Shows date/time
+    std::cout << "Build Target: x64 Windows/Linux (MinGW)" << std::endl;
+    std::cout << "--------------------------------------------------------" << std::endl;
+}
+
+/*
+void showSystemInfo() {
     std::cout << "\n[SYSTEM CONFIGURATION]" << std::endl;
     std::cout << "Architecture: Fixed-Width 12-Bit LZW Encoding" << std::endl;
     std::cout << "Max Dictionary Entries: 4096" << std::endl;
@@ -58,7 +73,7 @@ void showSystemInfo() {
     std::cout << "Comparison Engine: Bit-Quantization Lossy Module" << std::endl; // Updated
     std::cout << "--------------------------------------------------------" << std::endl;
 }
-
+*/
 
 void displayHexView(const std::string& filename) {
     std::ifstream file(filename, std::ios::binary);
